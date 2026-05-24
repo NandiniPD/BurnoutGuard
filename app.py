@@ -233,7 +233,8 @@ def predict_burnout(form_data):
     pid=int(lr.predict(x_sc.reshape(1,-1))[0]); proba=lr.predict_proba(x_sc.reshape(1,-1))[0]
     risk=LABEL_INV[pid]
     # Explain with LinearSHAP (mathematically faithful to the LR prediction model)
-    expl=ManualLinearSHAP(lr,FEATURE_COLS,bg); shap_d=expl.explain_single(x_sc,pid)
+    # Always explain w.r.t High Risk (class 2) so SHAP > 0 consistently means "Raises Burnout Risk"
+    expl=ManualLinearSHAP(lr,FEATURE_COLS,bg); shap_d=expl.explain_single(x_sc,2)
     # Grouped SHAP
     grouped={}
     for grp,feats in FEATURE_GROUPS.items():
