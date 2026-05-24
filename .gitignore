@@ -34,9 +34,8 @@ MANIFEST
 .env.production.local
 
 # Database
-database/*.db
+# Removed so local DB can be pushed for demo
 *.sqlite3
-*.db
 
 # Virtual environments
 venv/
