@@ -285,6 +285,7 @@ class NotificationScheduler:
     def _init_notification_table(self):
         """Add notification_log table to DB if not present."""
         try:
+            os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
             conn = sqlite3.connect(DB_PATH)
             conn.execute("""
                 CREATE TABLE IF NOT EXISTS notification_log (

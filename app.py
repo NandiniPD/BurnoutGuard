@@ -182,6 +182,8 @@ def init_db():
     os.makedirs(os.path.dirname(DB_PATH),exist_ok=True)
     c=sqlite3.connect(DB_PATH); c.executescript(SCHEMA); c.commit(); c.close()
 
+init_db()
+
 # ── AUTH ──────────────────────────────────────────────────────────────────────
 def hash_pw(p): return hashlib.sha256(('rv_burnout_salt_'+p).encode()).hexdigest()
 def check_pw(p,h): return hash_pw(p)==h
