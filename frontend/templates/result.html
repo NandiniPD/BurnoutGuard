@@ -270,7 +270,7 @@
           </div>
           <div class="feature-shap {% if feat.direction == 'increases' %}shap-up{% else %}shap-down{% endif %}">
             {% if feat.direction == 'increases' %}↑{% else %}↓{% endif %}
-            {{ '%+.4f' | format(feat.shap_value) }}
+            {{ '%.4f' | format(feat.shap_value|abs) }}
           </div>
         </div>
         {% endfor %}
@@ -325,7 +325,7 @@
             <li style="font-size:0.8rem; padding:0.4rem 0; border-bottom:1px solid rgba(42,42,74,0.3); display:flex; justify-content:space-between; align-items:center;">
               <span>{{ feat.label[:20] }}</span>
               <span class="{% if feat.direction == 'increases' %}shap-up{% else %}shap-down{% endif %}" style="font-family:var(--font-mono); font-weight:600;">
-                {% if feat.direction == 'increases' %}↑{% else %}↓{% endif %}{{ "%.4f"|format(feat.shap_value) }}
+                {% if feat.direction == 'increases' %}↑{% else %}↓{% endif %}{{ "%.4f"|format(feat.shap_value|abs) }}
               </span>
             </li>
             {% endfor %}
