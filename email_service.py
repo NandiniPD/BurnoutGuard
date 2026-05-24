@@ -83,7 +83,7 @@ def _base_email(title: str, body_html: str, cta_text: str = '', cta_url: str = '
     <!-- Footer -->
     <div style="text-align:center;margin-top:24px;font-size:11px;color:#4a4a6a;line-height:1.7;">
       BurnoutGuard — Nandini · BTech CSE Final Year · RV University 2024–25<br>
-      This is an automated notification. <a href="http://localhost:5000" style="color:#6c63ff;">Visit Dashboard</a>
+      This is an automated notification. <a href="https://burnoutguard-ogwx.onrender.com" style="color:#6c63ff;">Visit Dashboard</a>
     </div>
   </div>
 </body>
@@ -154,7 +154,7 @@ def send_welcome_email(user_name: str, email: str, username: str):
     {_p("We'll send you a reminder if you haven't submitted each week. You can unsubscribe anytime from the dashboard.")}
     """
     html = _base_email('Welcome to BurnoutGuard! 🎯', body,
-                       'Start Week 1 Survey →', 'http://localhost:5000/survey')
+                       'Start Week 1 Survey →', 'https://burnoutguard-ogwx.onrender.com/survey')
     return send_email(email, 'Welcome to BurnoutGuard — Start Your Week 1 Survey', html)
 
 
@@ -171,7 +171,7 @@ def send_survey_reminder(user_name: str, email: str, week_number: int, days_over
     {_p("Don't break your streak! 🔥")}
     """
     html = _base_email(f'{urgency}: Week {week_number} Survey', body,
-                       f'Fill Week {week_number} Survey →', 'http://localhost:5000/survey')
+                       f'Fill Week {week_number} Survey →', 'https://burnoutguard-ogwx.onrender.com/survey')
     return send_email(email, f'[BurnoutGuard] Week {week_number} Survey — Fill Now', html)
 
 
@@ -207,7 +207,7 @@ def send_prediction_result(user_name: str, email: str, week_number: int,
     {_p("See your full SHAP explanation, grouped analysis, and personalised recovery plan on the dashboard.")}
     """
     html = _base_email(f'{risk_emoji} Week {week_number} Result: {risk_level} Risk', body,
-                       'View Full Analysis →', f'http://localhost:5000/result/{week_number}')
+                       'View Full Analysis →', f'https://burnoutguard-ogwx.onrender.com/result/{week_number}')
     return send_email(email, f'[BurnoutGuard] Week {week_number}: {risk_level} Burnout Risk Predicted', html)
 
 
@@ -234,7 +234,7 @@ def send_trend_alert(user_name: str, email: str, trend: str, details: str,
     {_p(details)}
     """
     html = _base_email(alert_type, body,
-                       'View Dashboard →', 'http://localhost:5000/dashboard')
+                       'View Dashboard →', 'https://burnoutguard-ogwx.onrender.com/dashboard')
     return send_email(email, f'[BurnoutGuard] Trend Alert — {trend}', html)
 
 
@@ -256,7 +256,7 @@ def send_completion_email(user_name: str, email: str, risk_sequence: list,
     {_p("Thank you for participating in this research. Your data contributes to understanding student wellness at RV University. 💙")}
     """
     html = _base_email('🎓 4-Week Programme Complete!', body,
-                       'View Full History →', 'http://localhost:5000/history')
+                       'View Full History →', 'https://burnoutguard-ogwx.onrender.com/history')
     return send_email(email, '[BurnoutGuard] 🎓 All 4 Weeks Complete — Final Report', html)
 
 
