@@ -233,8 +233,8 @@
       <div class="card">
         <div class="card-title">📊 Weekly Progress Chart</div>
         {% if chart_file %}
-          <img src="{{ url_for('static', filename='img/' ~ chart_file) }}"
-               class="chart-img" alt="Weekly Trend">
+          <img src="{{ url_for('static', filename='img/' ~ chart_file) }}?t={{ range(1, 1000000) | random }}"
+               class="chart-img" alt="Weekly Burnout Trend">
         {% else %}
           <div class="empty-state">
             <span class="es-icon">📊</span>
@@ -249,8 +249,8 @@
       {% if latest_shap_chart %}
       <div class="card">
         <div class="card-title">🔍 SHAP Explanation — Week {{ latest_pred.week_number }}</div>
-        <img src="{{ url_for('static', filename='img/' ~ latest_shap_chart) }}"
-             class="chart-img" alt="SHAP Explanation">
+        <img src="{{ url_for('static', filename='img/' ~ latest_shap_chart) }}?t={{ range(1, 1000000) | random }}"
+             class="chart-img" alt="Latest SHAP Analysis">
         <p class="text-muted text-small mt-2">
           Red bars = features that <strong>increase</strong> your burnout risk.
           Green bars = features that <strong>reduce</strong> it.
