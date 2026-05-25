@@ -1241,7 +1241,7 @@ def save_artefacts(lr, scaler, feature_cols, label_map, label_inv,
 def run_full_pipeline():
     print("\n" + "="*60)
     print("  STUDENT BURNOUT RISK PREDICTION — ML PIPELINE")
-    print("  RV University — Nandini — BTech CSE Final Year")
+    print("  RV University")
     print("="*60 + "\n")
 
     # ── 1. Load training data ──
@@ -1262,7 +1262,6 @@ def run_full_pipeline():
 
     # ── 4. Confusion matrices (RF and LR only) ──
     print("\n[VIZ] Generating confusion matrices...")
-    plot_confusion_matrix(cms['Random Forest'], 'Random Forest', 'cm_rf.png')
     plot_confusion_matrix(cms['Logistic Regression'], 'Logistic Regression', 'cm_lr.png')
 
     # ── 5. Global feature importance ──
