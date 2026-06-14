@@ -64,8 +64,8 @@ Student burnout affects mental health, academic performance, and dropout rates. 
 
 ### Our Solution
 **BurnoutGuard** combines three core innovations:
-1. **Predictive ML Model** — Logistic Regression for production prediction (probabilities) + Random Forest retained for explanations
-2. **Explainable AI** — Custom TreeSHAP-style implementation (no external `shap` dependency)
+1. **Predictive ML Model** — Logistic Regression for production prediction (probabilities) 
+2. **Explainable AI** — Custom LinearSHAP-style implementation (no external `shap` dependency)
 3. **Temporal Tracking** — 4-week progression monitoring with trend alerts
 4. **Personalized Plans** — Recovery recommendations targeted at identified risk drivers
 
@@ -142,8 +142,8 @@ Student burnout affects mental health, academic performance, and dropout rates. 
 ┌─────────────────────────▼──────────────────────────────┐
 │      MACHINE LEARNING LAYER (ml/ml_pipeline.py)        │
 │  • Logistic Regression (production prediction model)   │
-│  • Random Forest (SHAP-style explainability model)     │
-│  • Model comparisons: DT, KNN, SVM, Naive Bayes        │
+│  • Manual SHAP explanation|
+│  • Model comparisons: Random forest,DT, KNN, SVM, Naive Bayes        │
 │  • StandardScaler (feature normalization)              │
 │  • Label Encoders (categorical variables)              │
 │  • TreeSHAP Calculator (custom implementation)         │
@@ -317,10 +317,10 @@ Open browser → http://localhost:5000
 │  SQLite Database   │          │    ML Model Bundle    │
 │  ─────────────     │          │  ──────────────────   │
 │  users             │          │  Logistic Regression  │
-│  weekly_responses  │          │  Random Forest (RF)   │
-│  predictions       │          │  StandardScaler       │
+│  weekly_responses  |
+│  StandardScaler       │
 └────────────────────┘          │  LabelEncoders        │
-                                │  ManualTreeSHAP       │
+                                │  ManualLineaeSHAP       │
                                 └───────────────────────┘
 ```
 
@@ -362,9 +362,9 @@ BurnoutGuard_MiniProject/
 │   ├── 📊 genz_mental_wellness_synthetic_dataset.csv  ← Training data (10K rows)
 │   │
 │   ├── 📂 saved_models/                 ← Model artifacts
-│   │   ├── burnout_model.pkl            ← Model bundle (LR prediction + RF explainability + scaler + encoders)
+│   │   ├── burnout_model.pkl            ← Model bundle (LR prediction + Custom LinerSHAP + scaler + encoders)
 │   │   ├── metrics.json                 ← Evaluation metrics
-│   │   └── model_comparison_results.json ← RF vs LR comparison
+│   │   └── model_comparison_results.json -> LR vs other model comparison
 │   │
 │   └── 📝 Student Wellness Survey (Responses).xlsx  ← Real test data (optional; path set via TEST_XLSX in .env)
 │
@@ -563,13 +563,12 @@ The pipeline trains and evaluates:
 
 ### Production Model Choice (as implemented in `app.py`)
 - **Logistic Regression** is used for prediction and confidence probabilities.
-- **Random Forest** is used for SHAP-style explainability (tree-path contributions).
 
 ### Latest Validation Metrics (from `ml/saved_models/metrics.json`)
 | Model               | Accuracy | F1-Score | AUC-ROC |
 |---------------------|----------|----------|---------|
 | Logistic Regression | 99.40%   | 99.42%   | 99.99%  |
-| Random Forest       | 96.05%   | 96.03%   | 99.57%  |
+
 
 ### Real Data Test Results
 Real-response prediction distribution and per-student confidence values are stored in
@@ -583,18 +582,28 @@ Real-response prediction distribution and per-student confidence values are stor
 **SHapley Additive exPlanations** — a game-theory approach to explaining ML predictions at the feature level.
 
 ### Implementation
-Custom TreeSHAP using sklearn's `decision_path` API (no external SHAP dependency).
+Custom LinearSHAP using the Logistic Regression coefficient matrix 
+(no external SHAP dependency).
 
 **How it works:**
-1. For each tree in Random Forest, trace decision path from root → leaf
-2. At each split node, calculate feature contribution
-3. Average contributions across all 200 trees
-4. Result: φ_i = contribution of feature i to final prediction
+1. At training time, compute background mean μ from the scaled training data
+2. For each prediction, retrieve the coefficient matrix W (shape: n_classes × n_features)
+3. For the predicted class c, compute each feature's contribution:
+   φᵢ = W[c, i] × (xᵢ − μᵢ)
+4. Sum of all φᵢ equals the difference between the predicted log-odds
+   and the expected background log-odds (SHAP additivity property satisfied exactly)
+5. Contributions are grouped into three domains:
+   Academic Stress | Behavioural Patterns | Lifestyle & Health
 
 **Interpretation:**
-- φ_i > 0 → feature pushed prediction toward **higher burnout risk**
-- φ_i < 0 → feature pushed prediction toward **lower burnout risk**
-- |φ_i| larger → stronger influence
+- φᵢ > 0 → feature pushed prediction toward **higher burnout risk**
+- φᵢ < 0 → feature pushed prediction toward **lower burnout risk**
+- |φᵢ| larger → stronger influence on this prediction
+
+**Why not the SHAP library?**
+The external SHAP library introduces binary dependency conflicts on 
+university deployment servers. This implementation is mathematically 
+identical to SHAP's LinearExplainer — no approximation involved.
 
 ### User-Facing Output
 1. **Waterfall Plot** — Top 5 features with +/- impacts
@@ -617,10 +626,6 @@ Validation metrics are exported by the pipeline into:
   - Accuracy: **99.40%**
   - F1-Score (weighted): **99.42%**
   - AUC-ROC (weighted OvR): **99.99%**
-- **Random Forest (Explainability model for SHAP-style contributions)**:
-  - Accuracy: **96.05%**
-  - F1-Score (weighted): **96.03%**
-  - AUC-ROC (weighted OvR): **99.57%**
 
 ### Explainability Outputs (SHAP)
 SHAP-style explanations are computed **per student per week**, so the top drivers vary by individual.
@@ -631,7 +636,6 @@ The UI shows:
 
 ### Confusion Matrices
 Generated and saved as PNG visualizations:
-- `cm_rf.png` — Random Forest
 - `cm_lr.png` — Logistic Regression
 
 ### Real-Student Test Results
@@ -737,9 +741,8 @@ This project is licensed under the **MIT License** — see LICENSE file for deta
 **Project Code:** BTech CSE Final Year (4 Credits)
 
 **Questions or Feedback?**
-- 📧 Email: [Your Email]
-- 🔗 GitHub: [Your GitHub Profile]
-- 💼 LinkedIn: [Your LinkedIn]
+- 📧 Email: nandinidodawad8@gmail.com
+- 💼 LinkedIn:
 
 ---
 
