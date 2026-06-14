@@ -146,7 +146,7 @@ Student burnout affects mental health, academic performance, and dropout rates. 
 │  • Model comparisons: Random forest,DT, KNN, SVM, Naive Bayes        │
 │  • StandardScaler (feature normalization)              │
 │  • Label Encoders (categorical variables)              │
-│  • TreeSHAP Calculator (custom implementation)         │
+│  • LinrarSHAP Calculator (custom implementation)         │
 │  • Visualization Generator                             │
 └─────────────────────────┬──────────────────────────────┘
                           │
